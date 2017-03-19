@@ -8,8 +8,6 @@ $dotenv->load();
 $dotenv->required(['TIMEZONE'])->notEmpty();
 $dotenv->required(['DB_DRIVER', 'DB_HOST', 'DB_USER', 'DB_DATABASE'])->notEmpty();
 $dotenv->required(['DB_PASSWORD']);
-$dotenv->required(['FACEBOOK_APP_ID', 'FACEBOOK_APP_SECRET'])->notEmpty();
-$dotenv->required(['GOOGLE_APP_ID', 'GOOGLE_APP_SECRET'])->notEmpty();
 $dotenv->required(['JOB_SERVERS'])->notEmpty();
 
 date_default_timezone_set(getenv('TIMEZONE'));
@@ -38,5 +36,11 @@ return [
     ],
     'job' => [
         'servers' => getenv('JOB_SERVERS')
-    ]
+    ],
+    // Monolog settings
+    'logger' => [
+        'name' => 'slim-app',
+        'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
+        'level' => \Monolog\Logger::DEBUG,
+    ],
 ];
