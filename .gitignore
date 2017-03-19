@@ -3,3 +3,4 @@ composer.phar
 .idea
 .env
 build/
+propel
