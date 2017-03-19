@@ -5,8 +5,8 @@ services:
     volumes: 
       - ./public:/var/www/html/
       - ./config/php.ini:/etc/php5/apache2/conf.d/php.ini
-    environment:
-      - 
+    #environment:
+    #  - 
     ports:
       - "80:80"
       - "443:443"
@@ -14,17 +14,19 @@ services:
       - db
 
   phpmyadmin:
-    image: corbinu/docker-phpmyadmin
-    ports :
-      - "8080:80"
+    image: phpmyadmin/phpmyadmin
     environment:
-      - MYSQL_USERNAME=root
-      - MYSQL_PASSWORD=
+     - PMA_ARBITRARY=1
+    restart: always
+    ports:
+     - 8080:80
+    volumes:
+     - /sessions
     links:
       - db
 
   db:
-    image: mariadb
+    image: mariadb:10.1
     command: mysqld --innodb-buffer-pool-size=20M
     volumes:
       - "./.mariadb:/var/lib/mysql:rw"
@@ -32,7 +34,7 @@ services:
       - "MYSQL_DATABASE=ecom"
       - "MYSQL_USER=ecom"
       - "MYSQL_PASSWORD=ecom123"
-      - "MYSQL_ROOT_PASSWORD="
+      - "MYSQL_ROOT_PASSWORD=root"
     ports:
       - "3306:3306"
 
