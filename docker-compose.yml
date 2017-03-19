@@ -4,7 +4,7 @@ services:
     image: php:5.6.30-apache
     volumes: 
       - ./public:/var/www/html/
-      - ./conf/php.ini:/etc/php5/apache2/conf.d/php.ini
+      - ./config/php.ini:/etc/php5/apache2/conf.d/php.ini
     environment:
       - 
     ports:
