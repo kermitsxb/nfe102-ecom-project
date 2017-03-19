@@ -1,10 +1,11 @@
 version: '2'
 services:
   web:
-    image: php:5.6.30-apache
+    image: local/php:5.6-apache
     volumes: 
-      - ./public:/var/www/html/
+      - ./:/var/www/html/
       - ./config/php.ini:/etc/php5/apache2/conf.d/php.ini
+      - ./config/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
     #environment:
     #  - 
     ports:
