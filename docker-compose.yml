@@ -1,0 +1,40 @@
+version: '2'
+services:
+  web:
+    image: php:5.6.30-apache
+    volumes: 
+      - ./public:/var/www/html/
+      - ./conf/php.ini:/etc/php5/apache2/conf.d/php.ini
+    environment:
+      - 
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - db
+
+  phpmyadmin:
+    image: corbinu/docker-phpmyadmin
+    ports :
+      - "8080:80"
+    environment:
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=
+    links:
+      - db
+
+  db:
+    image: mariadb
+    command: mysqld --innodb-buffer-pool-size=20M
+    volumes:
+      #- "./mariadb:/var/lib/mysql:rw"
+    environment:
+      - "MYSQL_DATABASE=ecom"
+      - "MYSQL_USER=ecom"
+      - "MYSQL_PASSWORD=ecom123"
+      - "MYSQL_ROOT_PASSWORD="
+    ports:
+      - "3306:3306"
+
+
+
