@@ -9,8 +9,14 @@ $app = new App($di->get('settings'));
 $container = $app->getContainer();
 $di->set('container', $container);
 
-// Social integration
+$container['index'] = function () use ($di) {
+    return $di->newInstance(Application\Controller\Hello::class);
+};
 
+$app->get('/', 'Index:index')->setName('hello');
+
+// Social integration
+/*
 $di->set('HybridAuth', $di->lazy(function () use ($di, $app) {
     $container = $app->getContainer();
     $uri = $container['request']->getUri();
@@ -93,6 +99,8 @@ $container['Hello'] = function () use ($di) {
     }
     exit;
     */
+
+    /*
     return $di->newInstance(Application\Controller\Hello::class);
 };
 
@@ -104,6 +112,12 @@ $app->get('/login/social/endpoint', 'Auth:endpoint')->setName('loginSocialEndpoi
 $app->get('/login/{provider}', 'Auth:loginSocial')->setName('loginSocial');
 $app->get('/logout', 'Auth:logout');
 $app->post('/login', 'Auth:doLogin');
+
+$container['notFoundHandler'] = function ($c) {
+    return new Application\Action\NotFoundHandler($c->get('view'), '404.twig', function ($request, $response) use ($c) {
+        return $c['response']->withStatus(404);
+    });
+};*/
 
 // Run application
 

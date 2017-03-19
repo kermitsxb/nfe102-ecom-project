@@ -10,7 +10,7 @@ $di->setAutoResolve(false);
 $di->set('settings', $di->lazyRequire(ROOT_APP . '/config.php'));
 
 // Data
-
+/*
 $di->set('EntityManager', $di->lazy(function () use ($di) {
     $settings = $di->get('settings');
     $createEntityManager = require_once(ROOT_APP . '/Infrastructure/Domain/Doctrine/bootstrap.php');
@@ -24,11 +24,12 @@ foreach ([
         'em' => $di->lazyGet('EntityManager')
     ]));
 }
-
+*/
 // Controllers
 
 $di->setter[Application\Controller\ControllerInterface::class]['setRenderer'] = $di->lazyGet('ViewRenderer');
 $di->setter[Application\Controller\ControllerInterface::class]['setSettings'] = $di->lazyGet('settings');
+
 
 // View
 
@@ -39,6 +40,7 @@ $di->set('ViewRenderer', $di->lazy(function () use ($di) {
     return $view;
 }));
 
+/*
 // Job queue
 
 $di->set('queue:events', $di->lazy(function () use ($di) {
@@ -56,5 +58,5 @@ $di->set('event', $di->lazy(function () use ($di) {
     $queue = $di->get('queue:events');
     return new Application\Event\Dispatcher($queue);
 }));
-
+*/
 return $di;
