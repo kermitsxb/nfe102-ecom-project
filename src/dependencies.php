@@ -1,62 +1,37 @@
 <?php
-use Aura\Di\Container;
-use Aura\Di\Factory;
 
-$di = new Container(new Factory());
-$di->setAutoResolve(false);
+$container = $app->getContainer();
+// view renderer
+$container['renderer'] = function ($c) {
+    $settings = $c->get('settings');
+    return new Application\View\Twig($settings['view']['templates'], $settings['view']);
+};
+// monolog
+$container['logger'] = function ($c) {
+    $settings = $c->get('settings')['logger'];
+    $logger = new Monolog\Logger($settings['name']);
+    $logger->pushProcessor(new Monolog\Processor\UidProcessor());
+    $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
+    return $logger;
+};
 
-// Settings
+$container['authAdapter'] = function ($c) {
+    $settings = $c->get('settings')['db'];
+    $conn = 'mysql:dbname=' . $settings['database'] . ";host=" . $settings['host'];
+    $db = new \PDO($conn, $settings['user'], $settings['password']);
+    $adapter = new \JeremyKendall\Slim\Auth\Adapter\Db\PdoAdapter(
+            $db,
+            "user",
+            "email",
+            "password",
+            new \JeremyKendall\Password\PasswordValidator()
+    );
 
-$di->set('settings', $di->lazyRequire(ROOT_APP . '/config.php'));
+    return $adapter;
+};
 
-// Data
-/*
-$di->set('EntityManager', $di->lazy(function () use ($di) {
-    $settings = $di->get('settings');
-    $createEntityManager = require_once(ROOT_APP . '/Infrastructure/Domain/Doctrine/bootstrap.php');
-    return $createEntityManager($settings['db']);
-}));
+$container['acl'] = function ($c) {
+    return new Application\Permission\Acl();
+};
 
-foreach ([
-    'User' => Infrastructure\Domain\Doctrine\Repository\UserRepository::class
-] as $entity => $repositoryImplementation) {
-    $di->set("{$entity}Repository", $di->lazyNew($repositoryImplementation, [
-        'em' => $di->lazyGet('EntityManager')
-    ]));
-}
-*/
-// Controllers
-
-$di->setter[Application\Controller\ControllerInterface::class]['setRenderer'] = $di->lazyGet('ViewRenderer');
-$di->setter[Application\Controller\ControllerInterface::class]['setSettings'] = $di->lazyGet('settings');
-
-
-// View
-
-$di->set('ViewRenderer', $di->lazy(function () use ($di) {
-    $settings = $di->get('settings');
-    $view = new Application\View\Twig($settings['view']['templates'], $settings['view']);
-    $di->get('container')->register($view);
-    return $view;
-}));
-
-/*
-// Job queue
-
-$di->set('queue:events', $di->lazy(function () use ($di) {
-    $settings = $di->get('settings');
-    $settings['job'] += [
-        'servers' => ''
-    ];
-    $queue = new Infrastructure\Queue\EventQueue(array_map('trim', explode(',', $settings['job']['servers'])));
-    return $queue;
-}));
-
-// Events
-
-$di->set('event', $di->lazy(function () use ($di) {
-    $queue = $di->get('queue:events');
-    return new Application\Event\Dispatcher($queue);
-}));
-*/
-return $di;
+$container->register(new \JeremyKendall\Slim\Auth\ServiceProvider\SlimAuthProvider());
