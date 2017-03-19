@@ -5,3 +5,4 @@ composer.phar
 build/
 propel
 bin/admingen.php
+.mariadb

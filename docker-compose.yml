@@ -27,7 +27,7 @@ services:
     image: mariadb
     command: mysqld --innodb-buffer-pool-size=20M
     volumes:
-      #- "./mariadb:/var/lib/mysql:rw"
+      - "./.mariadb:/var/lib/mysql:rw"
     environment:
       - "MYSQL_DATABASE=ecom"
       - "MYSQL_USER=ecom"
