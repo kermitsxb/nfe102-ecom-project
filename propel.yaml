@@ -1,0 +1,46 @@
+propel:
+  database:
+      connections:
+          eshop:
+              adapter: mysql
+              classname: Propel\Runtime\Connection\ConnectionWrapper
+              dsn: "mysql:host=localhost;dbname=eshop"
+              user: root
+              password: 
+              attributes:
+  runtime:
+      defaultConnection: eshop
+      connections:
+          - eshop
+  generator:
+      defaultConnection: eshop
+      connections:
+          - eshop
+  ### Directories and Filenames ###
+  # http://propelorm.org/documentation/reference/configuration-file.html
+  paths:
+      # Directory where the project files (`schema.xml`, etc.) are located.
+      # Default value is current path #
+      projectDir:  {current_path}|string
+
+      # The directory where Propel expects to find your `schema.xml` file.
+      schemaDir: {current_path/config}|string
+
+      # The directory where Propel should output classes, sql, config, etc.
+      # Default value is current path #
+      outputDir: {current_path/build}|string
+
+      # The directory where Propel should output generated object model classes.
+      phpDir: {current-path/build/class}|string
+
+      # The directory where Propel should output the compiled runtime configuration.
+      phpConfDir: {current-path/build/conf}|string
+
+      # The directory where Propel should output the generated migrations.
+      migrationDir: {current-path/build/migration}|string
+
+      # The directory where Propel should output the generated DDL (or data insert statements, etc.)
+      sqlDir: {current-path/build/sql}|string
+
+      # Directory in which your composer.json resides
+      composerDir: {empty}|string
