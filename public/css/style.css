@@ -1,0 +1,24 @@
+body{
+    padding-top: 100px !important;
+}
+
+.container.login{
+    border: 1px solid grey;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+
+div.addresses .glyphicon-plus-sign{
+    cursor: pointer !important;
+}
+
+.address-div{
+    background-color: Lavender;
+    border-radius:7px;
+    padding-top:10px;
+    padding-bottom:10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}

@@ -21,7 +21,8 @@
         "source": "https://github.com/kermit6000/nfe102-ecom-project"
     },
     "autoload": {
-        "psr-4": { "": "src/" }
+        "psr-4": { "": "src/" },
+        "classmap": ["build/class"]
     },
     "require": {
         "php": ">=5.5",

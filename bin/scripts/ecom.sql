@@ -237,13 +237,16 @@ DROP TABLE IF EXISTS `ecom`.`user` ;
 
 CREATE TABLE IF NOT EXISTS `ecom`.`user` (
   `id` INT NOT NULL,
-  `email` VARCHAR(255) NULL,
+  `email` VARCHAR(255) NULL, -- Modified Email
   `password` VARCHAR(80) NULL,
   `salt` VARCHAR(20) NULL,
-  `roles` VARCHAR(50) NULL,
+  `role` VARCHAR(50) NULL, -- Modified roles
   `creation_date` DATETIME NULL,
   `modification_date` DATETIME NULL,
   `status` INT NULL,
+  `lastname` VARCHAR(100) NULL,
+  `firstname` VARCHAR(100) NULL,
+  `cartserialized` MEDIUMTEXT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 

@@ -1,0 +1,132 @@
+{% extends 'layouts/default.html' %}
+{% set active_page = "address" %}
+{% block content %}
+
+<div class="container login">
+
+    <div class="container addresses">
+        <div class="row">
+            <h2>Mes adresses <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></h2>
+            <div class="add-address" style="display:none">
+                <form method="post" class="form-horizontal">
+                    <fieldset>
+                        <h3>Ajouter une adresse</h3>
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="txtNom">Nom</label>
+                            <div class="col-md-4">
+                                <input id="txtNom" name="lastname" type="text" placeholder="Nom"
+                                       class="form-control input-md" required="">
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="txtPrenom">Prénom</label>
+                            <div class="col-md-4">
+                                <input id="txtPrenom" name="firstname" type="text" placeholder="Prénom"
+                                       class="form-control input-md" required="">
+
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="txtAdd1">Adresse 1</label>
+                            <div class="col-md-4">
+                                <input id="txtAdd1" name="address1" type="text" placeholder="" class="form-control input-md"
+                                       required="">
+
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="txtAdd2">Adresse 2</label>
+                            <div class="col-md-4">
+                                <input id="txtAdd2" name="address2" type="text" placeholder=""
+                                       class="form-control input-md">
+
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="txtCp">Code Postal</label>
+                            <div class="col-md-4">
+                                <input id="txtCp" name="zipcode" type="text" placeholder="Code Postal"
+                                       class="form-control input-md" required="">
+
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="txtVille">Ville</label>
+                            <div class="col-md-4">
+                                <input id="txtVille" name="city" type="text" placeholder="Ville"
+                                       class="form-control input-md" required="">
+
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="txtPays">Pays</label>
+                            <div class="col-md-4">
+                                <input id="txtPays" name="country" type="text" placeholder="Pays"
+                                       class="form-control input-md" required="">
+
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="txtPhone">Téléphone</label>
+                            <div class="col-md-4">
+                                <input id="txtPhone" name="phone" type="text" placeholder="Téléphone"
+                                       class="form-control input-md" required="">
+
+                            </div>
+                        </div>
+
+
+                        <!-- Button -->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="register"></label>
+                            <div class="col-md-4">
+                                <button id="register" name="submit" class="btn btn-primary">Enregistrer</button>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+            {% for address in adresses %}
+                <div class="col-lg-4 address-div">
+                    {{ address.getFirstname }} {{ address.getLastname }}<br>
+                    {{ address.getAddressLine1 }} <br>
+                    {{ address.getZipcode }} {{ address.getCity }} <br>
+                    {{ address.getCountry }}
+
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script type="application/javascript">
+    jQuery(document).ready(function(){
+        jQuery('.glyphicon-plus-sign').click(function(){
+            if (!jQuery('.add-address').is(':visible'))
+            {
+                jQuery('.add-address').show();
+            } else {
+                jQuery('.add-address').hide();
+            }
+
+        });
+    });
+</script>
+
+{% endblock %}

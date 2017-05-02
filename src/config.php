@@ -4,6 +4,10 @@ define ('ROOT', dirname(__DIR__));
 define ('ROOT_APP', ROOT . '/src');
 
 use Dotenv\Dotenv;
+use JeremyKendall\Password\PasswordValidator;
+use JeremyKendall\Slim\Auth\Adapter\Db\PdoAdapter;
+use JeremyKendall\Slim\Auth\Bootstrap;
+
 
 //https://github.com/vlucas/phpdotenv
 
@@ -12,6 +16,7 @@ $dotenv->load();
 $dotenv->required(['TIMEZONE'])->notEmpty();
 $dotenv->required(['DB_DRIVER', 'DB_HOST', 'DB_USER', 'DB_DATABASE'])->notEmpty();
 $dotenv->required(['DB_PASSWORD']);
+$dotenv->required(['BASE_URL']);
 $dotenv->required(['JOB_SERVERS'])->notEmpty();
 
 date_default_timezone_set(getenv('TIMEZONE'));

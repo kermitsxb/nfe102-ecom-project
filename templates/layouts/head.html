@@ -1,7 +1,13 @@
+{% set active_page = active_page|default('index') %}
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap 101 Template</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css" media="all">
+    <title>Seedly</title>
+
+    <link rel="stylesheet" href="{{baseUrl}}/css/layout.css" media="all">
+    {% if active_page != 'index' %}<link rel="stylesheet" href="{{baseUrl}}/css/style.css" media="all">{% endif%}
+    <link rel="stylesheet" href="{{baseUrl}}/css/bootstrap.min.css" media="all">
+    <script src="{{baseUrl}}/js/jquery-3.2.0.min.js"></script>
+    <script src="{{baseUrl}}/js/bootstrap.min.js"></script>
 </head>

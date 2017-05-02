@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="ecom" defaultIdMethod="native" defaultPhpNamingMethod="underscore">
+  <table name="currency" idMethod="native" phpName="Currency">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="label" phpName="Label" type="VARCHAR" size="100"/>
+    <column name="code" phpName="Code" type="VARCHAR" size="10"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="media" idMethod="native" phpName="Media">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="label" phpName="Label" type="VARCHAR" size="100"/>
+    <column name="url" phpName="Url" type="VARCHAR" size="255"/>
+    <column name="product_id" phpName="ProductId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <foreign-key foreignTable="product" name="fk_media_product1">
+      <reference local="product_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_media_product1_idx">
+      <index-column name="product_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="order" idMethod="native" phpName="Order">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="creation_date" phpName="CreationDate" type="TIMESTAMP"/>
+    <column name="modification_date" phpName="ModificationDate" type="TIMESTAMP"/>
+    <column name="ordernumber" phpName="Ordernumber" type="VARCHAR" size="45"/>
+    <column name="order_status" phpName="OrderStatus" type="INTEGER"/>
+    <column name="total_amount_with_tax" phpName="TotalAmountWithTax" type="DECIMAL" scale="0"/>
+    <column name="total_amount_without_tax" phpName="TotalAmountWithoutTax" type="DECIMAL" scale="0"/>
+    <column name="currency_code" phpName="CurrencyCode" type="VARCHAR" size="10"/>
+    <column name="shipping_fee_with_tax" phpName="ShippingFeeWithTax" type="DECIMAL" scale="0"/>
+    <column name="shipping_fee_without_tax" phpName="ShippingFeeWithoutTax" type="DECIMAL" scale="0"/>
+    <column name="billing_address_id" phpName="BillingAddressId" type="INTEGER"/>
+    <column name="shipping_address_id" phpName="ShippingAddressId" type="INTEGER"/>
+    <column name="user_id" phpName="UserId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="payment_id" phpName="PaymentId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="shipment_id" phpName="ShipmentId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <foreign-key foreignTable="payment" name="fk_order_payment1">
+      <reference local="payment_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shipment" name="fk_order_shipment1">
+      <reference local="shipment_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="user" name="fk_order_user1">
+      <reference local="user_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_order_user1_idx">
+      <index-column name="user_id"/>
+    </index>
+    <index name="fk_order_payment1_idx">
+      <index-column name="payment_id"/>
+    </index>
+    <index name="fk_order_shipment1_idx">
+      <index-column name="shipment_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="order_line" idMethod="native" phpName="OrderLine">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="qty" phpName="Qty" type="INTEGER"/>
+    <column name="unit_price" phpName="UnitPrice" type="DECIMAL" scale="0"/>
+    <column name="total_amount" phpName="TotalAmount" type="DECIMAL" scale="0"/>
+    <column name="order_id" phpName="OrderId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <column name="product_id" phpName="ProductId" type="INTEGER" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="order" name="fk_order_line_order1">
+      <reference local="order_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="product" name="fk_order_line_product1">
+      <reference local="product_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_order_line_order1_idx">
+      <index-column name="order_id"/>
+    </index>
+    <index name="fk_order_line_product1_idx">
+      <index-column name="product_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="payment" idMethod="native" phpName="Payment">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <column name="amount" phpName="Amount" type="DECIMAL" scale="0"/>
+    <column name="payment_method_id" phpName="PaymentMethodId" type="INTEGER" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="payment_method" name="fk_payment_payment_method1">
+      <reference local="payment_method_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_payment_payment_method1_idx">
+      <index-column name="payment_method_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="payment_method" idMethod="native" phpName="PaymentMethod">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="label" phpName="Label" type="VARCHAR" size="100"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="product" idMethod="native" phpName="Product">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="label" phpName="Label" type="VARCHAR" size="255"/>
+    <column name="date_creation" phpName="DateCreation" type="TIMESTAMP"/>
+    <column name="date_modification" phpName="DateModification" type="TIMESTAMP"/>
+    <column name="start_publication_date" phpName="StartPublicationDate" type="TIMESTAMP"/>
+    <column name="end_publication_date" phpName="EndPublicationDate" type="TIMESTAMP"/>
+    <column name="sku" phpName="Sku" type="VARCHAR" size="100"/>
+    <column name="weight" phpName="Weight" type="DECIMAL" scale="0"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <column name="product_shelf_id" phpName="ProductShelfId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="description" phpName="Description" type="CLOB"/>
+    <foreign-key foreignTable="product_shelf" name="fk_product_product_shelf1">
+      <reference local="product_shelf_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_product_product_shelf1_idx">
+      <index-column name="product_shelf_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="product_price" idMethod="native" phpName="ProductPrice">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="price_ht" phpName="PriceHt" type="DECIMAL" scale="0"/>
+    <column name="price_ttc" phpName="PriceTtc" type="DECIMAL" scale="0"/>
+    <column name="tax" phpName="Tax" type="DECIMAL" scale="0"/>
+    <column name="currency_id" phpName="CurrencyId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <column name="product_id" phpName="ProductId" type="INTEGER" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="currency" name="fk_product_price_currency1">
+      <reference local="currency_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="product" name="fk_product_price_product1">
+      <reference local="product_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_product_price_currency1_idx">
+      <index-column name="currency_id"/>
+    </index>
+    <index name="fk_product_price_product1_idx">
+      <index-column name="product_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="product_shelf" idMethod="native" phpName="ProductShelf">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="label" phpName="Label" type="VARCHAR" size="100"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="product_stock" idMethod="native" phpName="ProductStock">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="value" phpName="Value" type="INTEGER"/>
+    <column name="product_id" phpName="ProductId" type="INTEGER" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="product" name="fk_product_stock_product1">
+      <reference local="product_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_product_stock_product1_idx">
+      <index-column name="product_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="shipment" idMethod="native" phpName="Shipment">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <column name="amount_ht" phpName="AmountHt" type="DECIMAL" scale="0"/>
+    <column name="amount_ttc" phpName="AmountTtc" type="DECIMAL" scale="0"/>
+    <column name="shipment_method_id" phpName="ShipmentMethodId" type="INTEGER" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="shipment_method" name="fk_shipment_shipment_method1">
+      <reference local="shipment_method_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_shipment_shipment_method1_idx">
+      <index-column name="shipment_method_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="shipment_method" idMethod="native" phpName="ShipmentMethod">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="label" phpName="Label" type="VARCHAR" size="100"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="shipment_weight_grid" idMethod="native" phpName="ShipmentWeightGrid">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="max_weight" phpName="MaxWeight" type="DECIMAL" scale="0"/>
+    <column name="price_ht" phpName="PriceHt" type="DECIMAL" scale="0"/>
+    <column name="pricettc" phpName="Pricettc" type="DECIMAL" scale="0"/>
+    <column name="shipment_method_id" phpName="ShipmentMethodId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <foreign-key foreignTable="shipment_method" name="fk_shipment_weight_grid_shipment_method1">
+      <reference local="shipment_method_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_shipment_weight_grid_shipment_method1_idx">
+      <index-column name="shipment_method_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="user" idMethod="native" phpName="User">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="email" phpName="Email" type="VARCHAR" size="255"/>
+    <column name="password" phpName="Password" type="VARCHAR" size="80"/>
+    <column name="salt" phpName="Salt" type="VARCHAR" size="20"/>
+    <column name="role" phpName="Role" type="VARCHAR" size="50"/>
+    <column name="creation_date" phpName="CreationDate" type="TIMESTAMP"/>
+    <column name="modification_date" phpName="ModificationDate" type="TIMESTAMP"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <column name="firstname" phpName="Firstname" type="VARCHAR" size="100"/>
+    <column name="lastname" phpName="Lastname" type="VARCHAR" size="100"/>
+    <column name="cartserialized" phpName="Cartserialized" type="LONGVARCHAR"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="user_address" idMethod="native" phpName="UserAddress">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="creation_date" phpName="CreationDate" type="TIMESTAMP"/>
+    <column name="modification_date" phpName="ModificationDate" type="TIMESTAMP"/>
+    <column name="label" phpName="Label" type="VARCHAR" size="100"/>
+    <column name="firstname" phpName="Firstname" type="VARCHAR" size="100"/>
+    <column name="lastname" phpName="Lastname" type="VARCHAR" size="100"/>
+    <column name="email" phpName="Email" type="VARCHAR" size="255"/>
+    <column name="company" phpName="Company" type="VARCHAR" size="100"/>
+    <column name="addressline1" phpName="Addressline1" type="VARCHAR" size="100"/>
+    <column name="addressline2" phpName="Addressline2" type="VARCHAR" size="100"/>
+    <column name="addressline3" phpName="Addressline3" type="VARCHAR" size="100"/>
+    <column name="zipcode" phpName="Zipcode" type="VARCHAR" size="20"/>
+    <column name="city" phpName="City" type="VARCHAR" size="100"/>
+    <column name="country" phpName="Country" type="VARCHAR" size="100"/>
+    <column name="phone" phpName="Phone" type="VARCHAR" size="45"/>
+    <column name="user_id" phpName="UserId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="status" phpName="Status" type="INTEGER"/>
+    <foreign-key foreignTable="user" name="fk_user_address_user1">
+      <reference local="user_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_user_address_user1_idx">
+      <index-column name="user_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

@@ -1,0 +1,63 @@
+{% extends 'layouts/default.html' %}
+{% set active_page = "account" %}
+{% block content %}
+
+<div class="container login">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <h2>Mon compte</h2>
+                        <!-- first-name input-->
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="txtEmail">Email</label>
+                            <div class="col-md-4">
+                                <input id="txtEmail" name="email" type="text" value="{{user.getEmail}}"
+                                       class="form-control input-md" disabled>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+                </div>
+                <div class="row">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <h2>Changer mot de passe</h2>
+                            <!-- first-name input-->
+                            <!-- Text input-->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="txtPass">Mot de passe</label>
+                                <div class="col-md-4">
+                                    <input id="txtPass" name="password" type="password" placeholder="******"
+                                           class="form-control input-md" required="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="txtPassConf">Confirmation mot de passe</label>
+                                <div class="col-md-4">
+                                    <input id="txtPassConf" name="passwordConf" type="password" placeholder="******"
+                                           class="form-control input-md" required="">
+                                </div>
+                            </div>
+                            <!-- Button -->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="enregistrer"></label>
+                                <div class="col-md-4">
+                                    <button id="enregistrer" name="submit" class="btn btn-primary">Enregistrer</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

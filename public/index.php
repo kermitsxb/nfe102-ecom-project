@@ -18,8 +18,10 @@ require __DIR__ . '/../src/middleware.php';
 // Register routes
 require __DIR__ . '/../src/routes.php';
 
+
 // Run app
 $app->run();
+
 
 //$di = require_once(__DIR__ . '/../src/bootstrap.php');
 //

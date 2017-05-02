@@ -1,0 +1,171 @@
+{% extends 'layouts/default.html' %}
+{% set active_page = "login" %}
+
+{% block content %}
+<div class="container login">
+    <h1>Bienvenue !</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger fade in">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="row">
+        <div class="col-lg-6">
+            <h2>Connectez vous !</h2>
+            <hr>
+            <form method="post" action="{{ path_for('loginPost') }}" class="form-horizontal">
+                <fieldset>
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtEmail">Email</label>
+                        <div class="col-md-4">
+                            <input id="txtEmail" name="email" type="text" placeholder="Email"
+                                   class="form-control input-md" required="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtPass">Mot de Passe</label>
+                        <div class="col-md-4">
+                            <input id="txtPass" name="password" type="password" placeholder="*********"
+                                   class="form-control input-md" required="">
+                        </div>
+                    </div>
+
+                    <!-- Button -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="connexion"></label>
+                        <div class="col-md-4">
+                            <button id="connexion" name="submit" class="btn btn-primary">Connexion</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="col-lg-6">
+            <h2>Première connexion ?</h2>
+            <hr>
+            <form method="post" action="{{ path_for('register') }}" class="form-horizontal">
+                <fieldset>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtNom">Nom</label>
+                        <div class="col-md-4">
+                            <input id="txtNom" name="nom" type="text" placeholder="Nom"
+                                   class="form-control input-md" required="">
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtPrenom">Prénom</label>
+                        <div class="col-md-4">
+                            <input id="txtPrenom" name="prenom" type="text" placeholder="Prénom"
+                                   class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="email">Email</label>
+                        <div class="col-md-4">
+                            <input id="email" name="email" type="text" placeholder="Email"
+                                   class="form-control input-md" required="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="passwordReg">Mot de passe</label>
+                        <div class="col-md-4">
+                            <input id="passwordReg" name="password" type="password" placeholder="*******"
+                                   class="form-control input-md" required="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="passwordConfReg">Confirmation Mot de passe</label>
+                        <div class="col-md-4">
+                            <input id="passwordConfReg" name="passwordConf" type="password" placeholder="*******"
+                                   class="form-control input-md" required="">
+                        </div>
+                    </div>
+
+                    <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-md-4 control-label" for="txtAdd1">Adresse 1</label>-->
+                        <!--<div class="col-md-4">-->
+                            <!--<input id="txtAdd1" name="add1" type="text" placeholder="" class="form-control input-md"-->
+                                   <!--required="">-->
+
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-md-4 control-label" for="txtAdd2">Adresse 2</label>-->
+                        <!--<div class="col-md-4">-->
+                            <!--<input id="txtAdd2" name="add2" type="text" placeholder=""-->
+                                   <!--class="form-control input-md">-->
+
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-md-4 control-label" for="txtCp">Code Postal</label>-->
+                        <!--<div class="col-md-4">-->
+                            <!--<input id="txtCp" name="cp" type="text" placeholder="Code Postal"-->
+                                   <!--class="form-control input-md" required="">-->
+
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-md-4 control-label" for="txtVille">Ville</label>-->
+                        <!--<div class="col-md-4">-->
+                            <!--<input id="txtVille" name="ville" type="text" placeholder="Ville"-->
+                                   <!--class="form-control input-md" required="">-->
+
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-md-4 control-label" for="txtPays">Pays</label>-->
+                        <!--<div class="col-md-4">-->
+                            <!--<input id="txtPays" name="pays" type="text" placeholder="Pays"-->
+                                   <!--class="form-control input-md" required="">-->
+
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-md-4 control-label" for="txtPhone">Téléphone</label>-->
+                        <!--<div class="col-md-4">-->
+                            <!--<input id="txtPhone" name="phone" type="text" placeholder="Téléphone"-->
+                                   <!--class="form-control input-md" required="">-->
+
+                        <!--</div>-->
+                    <!--</div>-->
+
+
+                    <!-- Button -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="register"></label>
+                        <div class="col-md-4">
+                            <button id="register" name="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
