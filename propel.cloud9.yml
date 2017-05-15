@@ -1,0 +1,47 @@
+propel:
+  database:
+      connections:
+          ecom:
+              adapter: mysql
+              classname: Propel\Runtime\Connection\ConnectionWrapper
+              dsn: "mysql:host=localhost;dbname=ecom"
+              user: ecom
+              password: ecom123
+              attributes:
+  runtime:
+      defaultConnection: ecom
+      connections:
+          - ecom
+  generator:
+      defaultConnection: ecom
+      connections:
+          - ecom
+  ### Directories and Filenames ###
+  # ./propel reverse "mysql:host=127.0.0.1;dbname=ecom;user=ecom;password=ecom123"
+  # http://propelorm.org/documentation/reference/configuration-file.html
+  paths:
+      # Directory where the project files (`schema.xml`, etc.) are located.
+      # Default value is current path #
+      projectDir:  /home/ubuntu/workspace
+
+      # The directory where Propel expects to find your `schema.xml` file.
+      schemaDir: /home/ubuntu/workspace/config
+
+      # The directory where Propel should output classes, sql, config, etc.
+      # Default value is current path #
+      outputDir: /home/ubuntu/workspace/build
+
+      # The directory where Propel should output generated object model classes.
+      phpDir: /home/ubuntu/workspace/build/class
+
+      # The directory where Propel should output the compiled runtime configuration.
+      phpConfDir: /home/ubuntu/workspace/build/conf
+
+      # The directory where Propel should output the generated migrations.
+      migrationDir: /home/ubuntu/workspace/build/migration
+
+      # The directory where Propel should output the generated DDL (or data insert statements, etc.)
+      sqlDir: /home/ubuntu/workspace/build/sql
+
+      # Directory in which your composer.json resides
+      composerDir: /home/ubuntu/workspace
