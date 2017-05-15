@@ -15,7 +15,7 @@ DROP SCHEMA IF EXISTS `ecom` ;
 -- -----------------------------------------------------
 -- Schema ecom
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `ecom` DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA IF NOT EXISTS `ecom` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;;
 USE `ecom` ;
 
 -- -----------------------------------------------------
@@ -85,7 +85,7 @@ DROP TABLE IF EXISTS `ecom`.`currency` ;
 CREATE TABLE IF NOT EXISTS `ecom`.`currency` (
   `id` INT NOT NULL,
   `label` VARCHAR(100) NULL,
-  `code` VARCHAR(5) NULL CHARACTER SET utf8 COLLATE utf8_general_ci,
+  `code` VARCHAR(5) NULL,
   `status` INT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
