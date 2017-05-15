@@ -3,7 +3,7 @@
   <table name="currency" idMethod="native" phpName="Currency">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" required="true"/>
     <column name="label" phpName="Label" type="VARCHAR" size="100"/>
-    <column name="code" phpName="Code" type="VARCHAR" size="10"/>
+    <column name="code" phpName="Code" type="VARCHAR" size="5" charset="utf8"/>
     <column name="status" phpName="Status" type="INTEGER"/>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>

@@ -3,4 +3,49 @@
 
 {% block content %}
 
+<div class="container" style="margin-top:50px;">
+
+    {% set nb_prod = 0 %}
+
+    {% for product in products %}
+    {% if nb_prod % 3 == 0 %}
+    <div class="row">
+        {% endif %}
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="col-item">
+                <div class="post-img-content">
+                    <img src="http://placehold.it/350x260" class="img-responsive">
+                    <span class="post-title">
+                        <b>{{ product.getLabel }}</b>
+                    </span>
+                </div>
+                <div class="info">
+                    <div class="row">
+                        <div class="rating hidden-sm col-md-6">
+                            <h5 class="price-text-color">{{ product.getPrice.getPriceTtc }}€</h5>
+                        </div>
+                    </div>
+                    <div class="separator clear-left">
+                        <p class="btn-add">
+                            <i class="fa fa-shopping-cart"></i><a href="#" class="hidden-sm">Add to cart</a></p>
+                        <p class="btn-details">
+                            <i class="fa fa-list"></i><a href="#" class="hidden-sm">More details</a></p>
+                    </div>
+                    <div class="clearfix">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% nb_prod += 1 %}
+        {% if nb_prod % 3 == 0 %}
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    {% if nb_prod % 3 != 0 %}
+    </div>
+    {% endif %}
+
+</div>
+
 {% endblock %}

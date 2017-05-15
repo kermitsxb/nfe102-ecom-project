@@ -85,7 +85,7 @@ DROP TABLE IF EXISTS `ecom`.`currency` ;
 CREATE TABLE IF NOT EXISTS `ecom`.`currency` (
   `id` INT NOT NULL,
   `label` VARCHAR(100) NULL,
-  `code` VARCHAR(10) NULL,
+  `code` VARCHAR(5) NULL CHARACTER SET utf8 COLLATE utf8_general_ci,
   `status` INT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;

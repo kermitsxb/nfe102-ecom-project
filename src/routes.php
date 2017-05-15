@@ -2,6 +2,7 @@
 use Application\Session\Session;
 
 /** @var Slim\Http\Request  $request */
+/** @var User  $user */
 
 // Routes
 
@@ -37,8 +38,11 @@ $app->group('/variete', function () use ($data) {
         // Sample log message
         $this->logger->info("'/variete/tomates' route");
         // Render index view
+        $query = new ProductQuery();
+        $tomates = $query->findByProductShelfId(1);
 
-//    return $this->renderer->render('index.html', $args);
+        $args['products'] = $tomates;
+
         return $this->view->render($response, 'shelf.html', $args);
     })->setName('tomates');
 
@@ -353,8 +357,91 @@ $app->get('/404', function($request, $response, $args) use ($app){
 })->setName('404');
 
 $app->get('/aaa', function($request, $response, $args) use ($app) {
+    /** @var Cart $cart */
+    /** @var User $user */
+    $this->logger->info("GET '/aaa' route");
+    $args['context'] = 'aaa';
+    $user = Session::getInstance()->get('user');
+    $cartLine = new CartLine();
+    $cartLine->qty = 2;
+    $cartLine->label = "Tomates cerises";
+    $cartLine->unitPrice = 1.00;
+    $cartLine->sku = 'TOMCER1';
 
+    $query = new CurrencyQuery();
+    $currency = $query->filterById(1)->findOne();
+
+    $cart = $user->getCart();
+    $cart->setCurrency($currency);
+    $cart->addCartLine($cartLine);
+
+    $cartLine = new CartLine();
+    $cartLine->qty = 3;
+    $cartLine->label = "Tomates Coeur de boeuf";
+    $cartLine->unitPrice = 2.50;
+    $cartLine->sku = 'TOMBOE1';
+    $cart->addCartLine($cartLine);
+
+    $user->setCart($cart);
+    Session::getInstance()->set('user', $user);
 });
+
+$app->get('/cart', function($request, $response, $args) use ($app) {
+    $this->logger->info("GET '/cart' route");
+    $args['context'] = 'cart';
+    $user = Session::getInstance()->get('user');
+    $this->logger->info("GET '/cart' => " . print_r($user->getCart(),true));
+    $args['cart'] = $user->getCart();
+    return $this->view->render($response, 'shop/cart.html', $args);
+})->setName('cart');
+
+$app->get('/mentions-legales', function($request, $response, $args) use ($app) {
+    $this->logger->info("GET '/mentions-legales' route");
+    $args['context'] = 'mentions-legales';
+    return $this->view->render($response, 'mentions.html', $args);
+})->setName('mentions-legales');
+
+$app->post('/cart', function($request, $response, $args) use ($app) {
+    $this->logger->info("POST '/cart' route");
+    $ret = array('code' => '500');
+    $user = Session::getInstance()->get('user');
+    $cart = $user->getCart();
+    $action = $request->getParam('action');
+
+    if ($action == 'remove')
+    {
+        $sku = $request->getParam('sku');
+        $qty = $request->getParam('qty');
+        if (!empty($sku))
+        {
+            $initCount = $cart->getItemCount();
+            $finalCount = count($cart->removeSku($sku));
+            $this->logger->info("POST '/cart' init: " . $initCount . "\t final: ".$finalCount);
+            if ($initCount > $finalCount) {
+                $ret['code'] = 200;
+            }
+        }
+    } else if ($action == 'modify') {
+        if ($request->getParam('cartLines')){
+            $cartLines = $request->getParam('cartLines');
+            $total = 0;
+            foreach ($cartLines as $cartLine) {
+                $this->logger->info("POST '/cart' cartLines : " . print_r($cartLine, true));
+                $cline = $cart->modifyQty($cartLine['sku'], $cartLine['qty']);
+            }
+            $ret['code'] = 200;
+//            $cartLines = json_decode($request->getParam('cartLines'));
+            $this->logger->info("POST '/cart' cartLines : " . print_r($cartLines, true));
+        }
+    } else if ($action == 'add'){
+
+    }
+
+    $user->setCart($cart);
+    Session::getInstance()->set('user', $user);
+
+    return json_encode($ret);
+})->setName('cart');
 
 
 
