@@ -33,8 +33,8 @@
                         <td class="col-sm-1 col-md-1" style="text-align: center">
                             <input type="number" class="form-control item-qty" value="{{ cartLine.qty }}">
                         </td>
-                        <td class="col-sm-1 col-md-1 text-center"><strong>{{ cartLine.unitPrice }}{{ cart.getCurrencyCode() }}</strong></td>
-                        <td class="col-sm-1 col-md-1 text-center"><strong>{{ cartLine.unitPrice * cartLine.qty }}{{ cart.getCurrencyCode() }}</strong></td>
+                        <td class="col-sm-1 col-md-1 text-center"><strong>{{ cartLine.unitPrice }}€</strong></td>
+                        <td class="col-sm-1 col-md-1 text-center"><strong>{{ cartLine.unitPrice * cartLine.qty }}€</strong></td>
                         <td class="col-sm-1 col-md-1">
                             <button sku="{{ cartLine.sku }}" type="button" class="btn btn-danger btn-remove">
                                 <span class="glyphicon glyphicon-remove"></span> Remove
@@ -46,7 +46,7 @@
                         <td>   </td>
                         <td>   </td>
                         <td><h5>Subtotal</h5></td>
-                        <td class="text-right"><h5><strong>{{ cart.getTotalAmount() }}{{ cart.getCurrencyCode() }}</strong></h5></td>
+                        <td class="text-right"><h5><strong>{{ cart.getTotalAmount() }}€</strong></h5></td>
                     </tr>
                     <tr>
                         <td>   </td>
@@ -60,7 +60,7 @@
                         <td>   </td>
                         <td>   </td>
                         <td><h3>Total</h3></td>
-                        <td class="text-right"><h3><strong>{{ cart.getTotalAmount() }}{{ cart.getCurrencyCode() }}</strong></h3></td>
+                        <td class="text-right"><h3><strong>{{ cart.getTotalAmount() }}€</strong></h3></td>
                     </tr>
                     <tr>
                         <td>
@@ -73,9 +73,9 @@
 
                         </td>
                         <td>
-                            <button type="button" class="btn btn-default">
+                            <a href="/" class="btn btn-default">
                                 <span class="glyphicon glyphicon-shopping-cart"></span> Continuer les achats
-                            </button></td>
+                            </a></td>
                         <td>
                             <button type="button" class="btn btn-success">
                                 Paiement <span class="glyphicon glyphicon-play"></span>

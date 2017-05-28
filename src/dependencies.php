@@ -63,7 +63,7 @@ $serviceContainer->setAdapterClass('ecom', 'mysql');
 $manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
 $dbsettings = $container->get('settings')['db'];
 $manager->setConfiguration([
-    'dsn' => 'mysql:host=' . $dbsettings['host'] . ';port=3306;dbname=' . $dbsettings['database'],
+    'dsn' => 'mysql:host=' . $dbsettings['host'] . ';port=3306;dbname=' . $dbsettings['database'].';charset=utf8',
     'user' => $dbsettings['user'],
     'password' => $dbsettings['password'],
     'settings' =>
@@ -93,7 +93,7 @@ $container['notFoundHandler'] = function ($c) {
 
 $container['errorHandler'] = function ($c) {
     return function ($request, $response, $exception) use ($c) {
-        $c->logger->info("ERROR HANDLER : " . get_class($exception));
+        $c->logger->info("ERROR HANDLER : " . get_class($exception) . " => " . $exception->getMessage());
         if ($exception instanceof Zend\Permissions\Acl\Exception\InvalidArgumentException)
         {
             return $c['response']->withRedirect($c->router->pathFor('forbidden'), 403);
