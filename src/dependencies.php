@@ -16,7 +16,8 @@ $container['view'] = function ($container) {
     // Instantiate and add Slim specific extension
     $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
     $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
-    $view['baseUrl'] = $container['request']->getUri()->getBaseUrl();
+    //$view['baseUrl'] = $container['request']->getUri()->getBaseUrl();
+    $view['baseUrl'] = str_replace('http','https',$container['request']->getUri()->getBaseUrl());
     $user = \Application\Session\Session::getInstance()->get('user');
     if ($user)
     {

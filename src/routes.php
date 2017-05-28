@@ -7,7 +7,7 @@ use Application\Session\Session;
 // Routes
 
 $data                 = array();
-$data['base_url']     = 'http://localhost/';
+$data['base_url']     = 'https://localhost/';
 //$data['current_url']  = $data['base_url'].trim($app->getContainer('request')->getUri(), '/');
 $data['mainmenu']     = array(
     array(
