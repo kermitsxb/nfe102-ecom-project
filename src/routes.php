@@ -34,9 +34,10 @@ $app->get('/', function ($request, $response, $args) use ($data) {
 })->setName('index');
 
 $app->group('/variete', function () use ($data) {
-    $this->get('/tomates', function ($request, $response, $args) use ($data) {
+    $this->get('/tomates', function ($request, $response, $args) {
         // Sample log message
         $this->logger->info("'/variete/tomates' route");
+        $args['context'] = 'tomates';
         // Render index view
         $query = new ProductQuery();
         $tomates = $query->findByProductShelfId(1);
@@ -405,11 +406,13 @@ $app->post('/cart', function($request, $response, $args) use ($app) {
     $this->logger->info("POST '/cart' route");
     $ret = array('code' => '500');
     $user = Session::getInstance()->get('user');
+    /** @var Cart  $cart */
     $cart = $user->getCart();
     $action = $request->getParam('action');
 
     if ($action == 'remove')
     {
+        $this->logger->info("POST '/cart' action:'remove'");
         $sku = $request->getParam('sku');
         $qty = $request->getParam('qty');
         if (!empty($sku))
@@ -422,6 +425,7 @@ $app->post('/cart', function($request, $response, $args) use ($app) {
             }
         }
     } else if ($action == 'modify') {
+        $this->logger->info("POST '/cart' action:'modify'");
         if ($request->getParam('cartLines')){
             $cartLines = $request->getParam('cartLines');
             $total = 0;
@@ -434,7 +438,28 @@ $app->post('/cart', function($request, $response, $args) use ($app) {
             $this->logger->info("POST '/cart' cartLines : " . print_r($cartLines, true));
         }
     } else if ($action == 'add'){
+        $cartLines = $request->getParam('cartLines');
 
+        $this->logger->info("POST '/cart' action:'add' sku:'".$cartLines[0]['sku']."'");
+
+        $productQuery = new ProductQuery();
+        $product = $productQuery->findOneBySku($cartLines[0]['sku']);
+
+//        $this->logger->info("POST '/cart' product :" . print_r($product, true));
+
+        if (($existingLine = $cart->findSku($cartLines[0]['sku']))){
+            $cline = $cart->modifyQty($cartLines[0]['sku'], (intval($cartLines[0]['qty']) + intval($existingLine->qty)));
+        } else {
+            $cartLine = new CartLine();
+            $cartLine->sku = $cartLines[0]['sku'];
+            $cartLine->qty = $cartLines[0]['qty'];
+            $cartLine->unitPrice = $product->getPrice()->getPriceTtc();
+            $cartLine->label = $product->getLabel();
+
+            $cart->addCartLine($cartLine);
+        }
+
+        $ret['code'] = 200;
     }
 
     $user->setCart($cart);
@@ -443,7 +468,29 @@ $app->post('/cart', function($request, $response, $args) use ($app) {
     return json_encode($ret);
 })->setName('cart');
 
+$app->post('/search', function($request, $response, $args) use ($app){
+    // Sample log message
+    $this->logger->info("POST '/search' route");
+    $args['context'] = 'search';
+    $res = array();
 
+    $origSearch = $request->getParam('search');
+    $this->logger->info("POST '/search' terms: " . print_r($origSearch,true));
+    $search = "%".$origSearch."%";
+    if (isset($search)) {
+        $query = new ProductQuery();
+        $res = $query->where('product.sku like ?', $search)
+            ->where('product.label like ?', $search)
+            ->find();
+
+    }
+//    $this->logger->info("POST '/search' " . print_r($res[0],true));
+
+    $args['products'] = $res;
+    $args['search'] = $origSearch;
+
+    return $this->view->render($response, 'shelf.html', $args);
+})->setName('search');
 
 
 

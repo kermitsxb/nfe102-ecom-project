@@ -35,6 +35,7 @@ class Acl extends ZendAcl
         $this->addResource('/cart');
         $this->addResource('/mentions-legales');
         $this->addResource('/aaa');
+        $this->addResource('/search');
 
         // APPLICATION PERMISSIONS
         // Now we allow or deny a role's access to resources. The third argument
@@ -47,6 +48,7 @@ class Acl extends ZendAcl
         $this->allow('guest', '/variete/aromatiques', 'GET');
 //        $this->allow('guest', '/[{name}]', 'GET');
         $this->allow('guest', '/register', ['POST']);
+        $this->allow('guest', '/search', ['POST']);
         $this->allow('guest', '/login', ['GET', 'POST']);
         $this->allow('guest', '/logout', 'GET');
         $this->allow('guest', '/cart', ['GET','POST']);

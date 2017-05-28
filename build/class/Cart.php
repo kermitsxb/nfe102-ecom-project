@@ -121,6 +121,7 @@ class Cart
                 return $cartLine;
             }
         }
+        return null;
     }
 
     /**

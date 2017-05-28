@@ -7,45 +7,111 @@
 
     {% set nb_prod = 0 %}
 
+    {% if products|length > 0%}
     {% for product in products %}
     {% if nb_prod % 3 == 0 %}
     <div class="row">
         {% endif %}
-        <div class="col-xs-12 col-sm-6 col-md-3">
-            <div class="col-item">
-                <div class="post-img-content">
-                    <img src="http://placehold.it/350x260" class="img-responsive">
-                    <span class="post-title">
-                        <b>{{ product.getLabel }}</b>
-                    </span>
-                </div>
-                <div class="info">
-                    <div class="row">
-                        <div class="rating hidden-sm col-md-6">
-                            <h5 class="price-text-color">{{ product.getPrice.getPriceTtc }}€</h5>
+        <div class="col-lg-4 product-container">
+            <div class="product-item">
+                <div class="col-item">
+                    <div class="post-img-content">
+                        <img src="http://placehold.it/350x260" class="img-responsive">
+                        <h4><b>{{ product.getLabel }}</b></h4>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h5>Ref : {{ product.getSku }}</h5>
+                            </div>
+                            <div class="col-lg-6">
+                                <h3 class="price-text-color">Prix : {{ product.getPrice.getPriceTtc }}€</h3>
+                            </div>
                         </div>
                     </div>
-                    <div class="separator clear-left">
-                        <p class="btn-add">
-                            <i class="fa fa-shopping-cart"></i><a href="#" class="hidden-sm">Add to cart</a></p>
-                        <p class="btn-details">
-                            <i class="fa fa-list"></i><a href="#" class="hidden-sm">More details</a></p>
+                    <div class="info">
+                        <div class="row">
+                            <div class="rating hidden-sm col-md-12">
+                                <p class="description">{{ product.getDescription }}</p>
+                            </div>
+                        </div>
+                        <div class="separator clear-left">
+                            <div class="row">
+                                <div class="col-lg-6 form-group">
+                                    <input type="hidden" class="product-sku" value="{{ product.getSku }}"/>
+                                    <select class="form-control product-qty">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <button type="button" class="btn btn-success btn-add" style="width:100%">
+                                        <i class="glyphicon glyphicon-shopping-cart"></i> Add to cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="clearfix">
                     </div>
                 </div>
             </div>
         </div>
-        {% nb_prod += 1 %}
+        {% set nb_prod = nb_prod + 1 %}
         {% if nb_prod % 3 == 0 %}
     </div>
     {% endif %}
     {% endfor %}
 
-    {% if nb_prod % 3 != 0 %}
-    </div>
-    {% endif %}
+    {%endif%}
 
+    {% if nb_prod % 3 != 0 %}
 </div>
+{% endif %}
+</div>
+<script src="{{baseUrl}}/js/setEqualHeight.js"></script>
+
+<script type="text/javascript">
+    // http://frontenddeveloper.0fees.net/colonnes-de-meme-hauteur/
+    jQuery.noConflict();
+    (function($){
+        "use strict";
+        $(document).ready(function(){
+            function twoColsEqualHeight() {
+                $('p.description').css({height: 'auto'}).setEqualHeight();
+//                $('.product-item').css({height: 'auto'}).setEqualHeight();
+            }
+
+            // make sure that the whole content is loaded before setting equalHeight
+            setTimeout(twoColsEqualHeight, 1000);
+
+            $(window).on('resize', function(){
+                twoColsEqualHeight();
+            });
+
+
+            jQuery('.btn-add').click(function(){
+                var $cartLines = [];
+                var sku = jQuery(this).parent().parent().children('.form-group').find(".product-sku").val();
+                var qty = jQuery(this).parent().parent().children('.form-group').find(".product-qty").val();
+                $cartLines.push({'sku' : sku, 'qty' : qty});
+                var jsonData = { 'cartLines' : $cartLines, 'action' : 'add'};
+
+                jQuery.ajax({
+                    url: "{{ path_for('cart') }}",
+                    method: 'POST',
+                    data:jsonData,
+                    dataType: "json"
+                }).done(function(data) {
+                    if (data.code == 200)
+                    {
+                        location.reload();
+                    }
+                });
+            });
+        });
+    })(jQuery);
+</script>
 
 {% endblock %}
