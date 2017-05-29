@@ -11,9 +11,9 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th class="text-center">Price</th>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th class="text-center">Prix</th>
                         <th class="text-center">Total</th>
                         <th> </th>
                     </tr>
@@ -37,7 +37,7 @@
                         <td class="col-sm-1 col-md-1 text-center"><strong>{{ cartLine.unitPrice * cartLine.qty }}€</strong></td>
                         <td class="col-sm-1 col-md-1">
                             <button sku="{{ cartLine.sku }}" type="button" class="btn btn-danger btn-remove">
-                                <span class="glyphicon glyphicon-remove"></span> Remove
+                                <span class="glyphicon glyphicon-remove"></span> Supprimer
                             </button></td>
                     </tr>
                     {% endfor %}
@@ -45,22 +45,22 @@
                         <td>   </td>
                         <td>   </td>
                         <td>   </td>
-                        <td><h5>Subtotal</h5></td>
+                        <td><h5>Sous-Total</h5></td>
                         <td class="text-right"><h5><strong>{{ cart.getTotalAmount() }}€</strong></h5></td>
                     </tr>
                     <tr>
                         <td>   </td>
                         <td>   </td>
                         <td>   </td>
-                        <td><h5>Estimated shipping</h5></td>
-                        <td class="text-right"><h5><strong>$6.94</strong></h5></td>
+                        <td><h5>Frais de port</h5></td>
+                        <td class="text-right"><h5><strong>1,50€</strong></h5></td>
                     </tr>
                     <tr>
                         <td>   </td>
                         <td>   </td>
                         <td>   </td>
                         <td><h3>Total</h3></td>
-                        <td class="text-right"><h3><strong>{{ cart.getTotalAmount() }}€</strong></h3></td>
+                        <td class="text-right"><h3><strong>{{ cart.getTotalAmount() + 1.5 }}€</strong></h3></td>
                     </tr>
                     <tr>
                         <td>
@@ -77,17 +77,56 @@
                                 <span class="glyphicon glyphicon-shopping-cart"></span> Continuer les achats
                             </a></td>
                         <td>
-                            <button type="button" class="btn btn-success">
-                                Paiement <span class="glyphicon glyphicon-play"></span>
-                            </button></td>
+                            <div id="paypal-button"></div>
+                            <!--<button type="button" class="btn btn-success">-->
+                                <!--Paiement <span class="glyphicon glyphicon-play"></span>-->
+                            <!--</button></td>-->
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
+
+
     <script type="application/javascript">
         jQuery(document).ready(function(){
+            paypal.Button.render({
+
+                env: 'sandbox', // Or 'sandbox',
+
+                client: {
+                    sandbox:    'AeMWABPTwynC4l5eXbGjqpU2aIPCK8OJvdPKsyIki36qjWu08RcGLIsrdKLprUoA3WPLjuJ1DIEnU0pd',
+                    production: 'AVlXiImurx37zuNjPSRqkjsOgm8eHLxTLWUbqJbHWDdJspjVjBbBmYtL0BFXJn6S_7roaeWTXBrX7oHi'
+                },
+
+//            commit: true, // Show a 'Pay Now' button
+
+                payment: function(data, actions) {
+                    // Set up the payment here
+                    return actions.payment.create({
+                        transactions: [
+                            {
+                                amount: { total: '{{ cart.getTotalAmount() + 1.5 }}', currency: 'EUR' }
+                            }
+                        ]
+                    });
+                },
+
+                onAuthorize: function(data, actions) {
+                    return actions.payment.execute().then(function() {
+                        window.location = "{{path_for('order-success') }}"
+//                        window.alert('Paiement effectué');
+                    });
+                },
+
+                onCancel: function(data, actions) {
+                    window.location = "{{path_for('order-fail') }}"
+//                    window.alert('Erreur lors du paiement');
+                }
+
+            }, '#paypal-button');
+
             jQuery('.btn-remove').click(function(){
                 var sku = jQuery(this).attr('sku');
                 var jsonData = { 'sku' : sku, 'action' : 'remove'};

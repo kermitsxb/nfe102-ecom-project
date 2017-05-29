@@ -463,6 +463,7 @@ $app->post('/cart', function($request, $response, $args) use ($app) {
     }
 
     $user->setCart($cart);
+    $user->save();
     Session::getInstance()->set('user', $user);
 
     return json_encode($ret);
@@ -479,8 +480,9 @@ $app->post('/search', function($request, $response, $args) use ($app){
     $search = "%".$origSearch."%";
     if (isset($search)) {
         $query = new ProductQuery();
-        $res = $query->where('product.sku like ?', $search)
-            ->where('product.label like ?', $search)
+        $res = $query->where('UPPER(product.sku) like ?', strtoupper($search))
+            ->_or()
+            ->where('UPPER(product.label) like ?', strtoupper($search))
             ->find();
 
     }
@@ -492,7 +494,29 @@ $app->post('/search', function($request, $response, $args) use ($app){
     return $this->view->render($response, 'shelf.html', $args);
 })->setName('search');
 
+$app->get('/order-success', function($request, $response, $args) {
+    $this->logger->info("GET '/order-success' route");
+    $args['context'] = 'order-success';
 
+    $args['orderSuccess'] = true;
+    $user = Session::getInstance()->get('user');
+    $args['cart'] = $user->getCart();
+    $user->destroyCart();
+    $user->save();
+    Session::getInstance()->set('user', $user);
+
+    return $this->view->render($response, 'shop/order.html', $args);
+})->setName('order-success');
+
+$app->get('/order-fail', function($request, $response, $args) {
+    $this->logger->info("GET '/order-fail' route");
+    $args['context'] = 'order-fail';
+
+    $args['orderSuccess'] = false;
+    $user = Session::getInstance()->get('user');
+    $args['cart'] = $user->getCart();
+    return $this->view->render($response, 'shop/order.html', $args);
+})->setName('order-fail');
 
 //use \Application\Controller\Index;
 

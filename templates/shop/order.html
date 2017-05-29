@@ -1,0 +1,15 @@
+{% extends 'layouts/default.html' %}
+{% set active_page = "order" %}
+{% block content %}
+
+<div class="container cart">
+    {%if orderSuccess=="true"%}
+        <h2>Le paiment à été effectué avec succès.</h2>
+        <p>Votre paiement a réussi, nous expédierons votre commande sous 48h.</p>
+    {% else %}
+        <h2>Le paiment à échoué.</h2>
+        <p>Le paiment de votre commande à échoué, veuillez nous contacter pour discuter du paiement de votre commande.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

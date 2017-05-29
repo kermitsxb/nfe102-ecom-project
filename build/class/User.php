@@ -30,7 +30,11 @@ class User extends BaseUser
      */
     public function getCart()
     {
-        return unserialize($this->getCartserialized());
+        $cart = unserialize($this->getCartserialized());
+        if (!$cart){
+            $cart = new Cart();
+        }
+        return $cart;
     }
 
     /**
