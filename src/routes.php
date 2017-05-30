@@ -25,6 +25,9 @@ $data['mainmenu']     = array(
 );
 
 $app->get('/', function ($request, $response, $args) use ($data) {
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     // Sample log message
     $this->logger->info("GET '/' route");
     // Render index view
@@ -35,6 +38,9 @@ $app->get('/', function ($request, $response, $args) use ($data) {
 
 $app->group('/variete', function () use ($data) {
     $this->get('/tomates', function ($request, $response, $args) {
+        /** @var Slim\Http\Request  $request */
+        /** @var Slim\Http\Response $response */
+        /** @var array $args */
         // Sample log message
         $this->logger->info("'/variete/tomates' route");
         $args['context'] = 'tomates';
@@ -48,6 +54,9 @@ $app->group('/variete', function () use ($data) {
     })->setName('tomates');
 
     $this->get('/aromatiques', function ($request, $response, $args) use ($data) {
+        /** @var Slim\Http\Request  $request */
+        /** @var Slim\Http\Response $response */
+        /** @var array $args */
         // Sample log message
         $this->logger->info("'/variete/aromatiques' route");
         // Render index view
@@ -61,6 +70,9 @@ $app->group('/variete', function () use ($data) {
  *  GET /login
  */
 $app->get('/login', function ($request, $response, $args) {
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     // Sample log message
     $this->logger->info("GET '/login' route");
     $args['context'] = 'login';
@@ -89,6 +101,9 @@ $app->get('/login', function ($request, $response, $args) {
  *  GET /logout
  */
 $app->get('/logout', function ($request, $response, $args){
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     $this->logger->info("GET '/user/logout' route");
 
     $this->authenticator->logout();
@@ -100,6 +115,9 @@ $app->get('/logout', function ($request, $response, $args){
  *  POST /login/register
  */
 $app->post('/register', function($request, $response, $args){
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     // Sample log message
     $this->logger->info("POST '/register' route");
     $args['context'] = 'register';
@@ -186,6 +204,9 @@ $app->post('/register', function($request, $response, $args){
 })->setName('register');
 
 $app->post('/login', function($request, $response, $args) use ($app){
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     // Sample log message
     $this->logger->info("POST '/login' route");
     $args['context'] = 'login';
@@ -220,6 +241,9 @@ $app->post('/login', function($request, $response, $args) use ($app){
 $app->group('/user', function () use ($app) {
 
     $this->get('/', function ($request, $response, $args) {
+        /** @var Slim\Http\Request  $request */
+        /** @var Slim\Http\Response $response */
+        /** @var array $args */
         $this->logger->info("GET '/user' route");
         $args['context'] = 'account';
 
@@ -230,16 +254,49 @@ $app->group('/user', function () use ($app) {
     })->setName('userIndex');
 
     $this->post('/', function ($request, $response, $args) {
-        $this->logger->info("GET '/user' route");
+        /** @var Slim\Http\Request  $request */
+        /** @var Slim\Http\Response $response */
+        /** @var array $args */
+        $this->logger->info("POST '/user' route");
         $args['context'] = 'account';
 
+        $password = $request->getParam('password');
+        $passwordConf = $request->getParam('passwordConf');
+
         $user = Session::getInstance()->get('user');
+        $message = array();
+
+
+        if (isset($password) && isset($passwordConf))
+        {
+            if ($password === $passwordConf)
+            {
+                $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
+                $user->save();
+                $message['error'] = false;
+                $message['value'] = "Mot de passe changé avec succès.";
+                $args['messages'][] = $message;
+            } else {
+                $message['error'] = true;
+                $message['value'] = "Les deux mots de passes saisis ne sont pas identiques.";
+                $args['messages'][] = $message;
+            }
+        } else {
+            $message['error'] = true;
+            $message['value'] = "Erreur lors de la saisie des mots de passes.";
+            $args['messages'][] = $message;
+        }
+
+
 
         $this->logger->info('User "'.$user->getId(). " - " . $user->getFirstname() . " " . $user->getLastname() .'" logged !');
         return $this->view->render($response, 'user/index.html', $args);
     })->setName('userIndex');
 
     $this->get('/address', function ($request, $response, $args) {
+        /** @var Slim\Http\Request  $request */
+        /** @var Slim\Http\Response $response */
+        /** @var array $args */
         $this->logger->info("GET '/user/address' route");
         $args['context'] = 'account';
 
@@ -255,55 +312,79 @@ $app->group('/user', function () use ($app) {
     })->setName('userAddress');
 
     $this->post('/address', function ($request, $response, $args) {
+        /** @var Slim\Http\Request  $request */
+        /** @var Slim\Http\Response $response */
+        /** @var array $args */
         $this->logger->info("POST '/user/address' route");
         $args['context'] = 'account';
 
         $user = Session::getInstance()->get('user');
-        $now = date("Y-m-d H:i:s");
 
-        $queryId = new UserAddressQuery();
-        $lastAddress = $queryId->orderById('desc')->findOne();
-        if ($lastAddress) {
-            $addressId = $lastAddress->getId() + 1;
-        } else {
-            $addressId = 0;
+        if ($request->getParam('action',null) == 'add') {
+            $now = date("Y-m-d H:i:s");
+
+            $queryId = new UserAddressQuery();
+            $lastAddress = $queryId->orderById('desc')->findOne();
+            if ($lastAddress) {
+                $addressId = $lastAddress->getId() + 1;
+            } else {
+                $addressId = 0;
+            }
+
+            $address = new UserAddress();
+            $address->setId($addressId);
+            $address->setCreationDate($now);
+            $address->setModificationDate($now);
+            $address->setFirstname($request->getParam('firstname'));
+            $address->setLastname($request->getParam('lastname'));
+            $address->setEmail($user->getEmail());
+            $address->setAddressline1($request->getParam('address1'));
+            $address->setAddressline2($request->getParam('address2'));
+            $address->setAddressline3($request->getParam('address3'));
+            $address->setCity($request->getParam('city'));
+            $address->setZipcode($request->getParam('zipcode'));
+            $address->setCompany($request->getParam('company'));
+            $address->setCountry($request->getParam('country'));
+            $address->setPhone($request->getParam('phone'));
+            $address->setUserId($user->getId());
+
+            $address->save();
+            $this->logger->info("POST '/user/address' ADD address to user " . $user->getFirstname() . " " . $user->getLastname());
+
+            $message = Session::getInstance()->get('message');
+            if (!$message) {
+                $message = array();
+            }
+            $message[] = "Adresse créée avec succès !";
+
+            $this->logger->info($message);
+
+            Session::getInstance()->set('message', $message);
+        } else if ($request->getParam('action',null) == 'delete'){
+            $ret = array('code' => '500');
+            $id = $request->getParam('id');
+            if (isset($id)){
+                $queryId = new UserAddressQuery();
+                $address = $queryId->findOneById($id);
+                if ($address) {
+                    $address->delete();
+                    if ($address->isDeleted()) {
+                        $this->logger->info("POST '/user/address' DELETE address ". $id ." to user " . $user->getFirstname() . " " . $user->getLastname());
+                        $ret['code'] = 200;
+                    }
+                }
+            }
+            return json_encode($ret);
         }
-
-        $address = new UserAddress();
-        $address->setId($addressId);
-        $address->setCreationDate($now);
-        $address->setModificationDate($now);
-        $address->setFirstname($request->getParam('firstname'));
-        $address->setLastname($request->getParam('lastname'));
-        $address->setEmail($user->getEmail());
-        $address->setAddressline1($request->getParam('address1'));
-        $address->setAddressline2($request->getParam('address2'));
-        $address->setAddressline3($request->getParam('address3'));
-        $address->setCity($request->getParam('city'));
-        $address->setZipcode($request->getParam('zipcode'));
-        $address->setCompany($request->getParam('company'));
-        $address->setCountry($request->getParam('country'));
-        $address->setPhone($request->getParam('phone'));
-        $address->setUserId($user->getId());
-
-        $address->save();
-
-        $message = Session::getInstance()->get('message');
-        if (!$message)
-        {
-            $message = array();
-        }
-        $message[] = "Adresse créée avec succès !";
-
-        $this->logger->info($message);
-
-        Session::getInstance()->set('message', $message);
 
         return $response->withRedirect($this->router->pathFor('userAddress'));
 
     })->setName('userAddress');
 
     $this->get('/orders', function ($request, $response, $args) {
+        /** @var Slim\Http\Request  $request */
+        /** @var Slim\Http\Response $response */
+        /** @var array $args */
         $this->logger->info("GET '/user/orders' route");
         $args['context'] = 'account';
 
@@ -319,6 +400,9 @@ $app->group('/user', function () use ($app) {
     })->setName('userOrder');
 
     $this->post('/orders', function ($request, $response, $args) {
+        /** @var Slim\Http\Request  $request */
+        /** @var Slim\Http\Response $response */
+        /** @var array $args */
         $this->logger->info("POST '/user/orders' route");
         $args['context'] = 'account';
 
@@ -348,11 +432,17 @@ $app->group('/user', function () use ($app) {
 
 
 $app->get('/forbidden', function($request, $response, $args) use ($app){
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     $this->logger->info("GET '/forbidden' route");
     return $this->view->render($response, '403.html', $args);
 })->setName('forbidden');
 
 $app->get('/404', function($request, $response, $args) use ($app){
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     $this->logger->info("GET '/404' route");
     return $this->view->render($response, '404.html', $args);
 })->setName('404');
@@ -388,6 +478,9 @@ $app->get('/aaa', function($request, $response, $args) use ($app) {
 });
 
 $app->get('/cart', function($request, $response, $args) use ($app) {
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     $this->logger->info("GET '/cart' route");
     $args['context'] = 'cart';
     $user = Session::getInstance()->get('user');
@@ -397,12 +490,18 @@ $app->get('/cart', function($request, $response, $args) use ($app) {
 })->setName('cart');
 
 $app->get('/mentions-legales', function($request, $response, $args) use ($app) {
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     $this->logger->info("GET '/mentions-legales' route");
     $args['context'] = 'mentions-legales';
     return $this->view->render($response, 'mentions.html', $args);
 })->setName('mentions-legales');
 
 $app->post('/cart', function($request, $response, $args) use ($app) {
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     $this->logger->info("POST '/cart' route");
     $ret = array('code' => '500');
     $user = Session::getInstance()->get('user');
@@ -470,6 +569,9 @@ $app->post('/cart', function($request, $response, $args) use ($app) {
 })->setName('cart');
 
 $app->post('/search', function($request, $response, $args) use ($app){
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     // Sample log message
     $this->logger->info("POST '/search' route");
     $args['context'] = 'search';
@@ -495,6 +597,9 @@ $app->post('/search', function($request, $response, $args) use ($app){
 })->setName('search');
 
 $app->get('/order-success', function($request, $response, $args) {
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     $this->logger->info("GET '/order-success' route");
     $args['context'] = 'order-success';
 
@@ -509,6 +614,9 @@ $app->get('/order-success', function($request, $response, $args) {
 })->setName('order-success');
 
 $app->get('/order-fail', function($request, $response, $args) {
+    /** @var Slim\Http\Request  $request */
+    /** @var Slim\Http\Response $response */
+    /** @var array $args */
     $this->logger->info("GET '/order-fail' route");
     $args['context'] = 'order-fail';
 
