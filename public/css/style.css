@@ -69,3 +69,14 @@ p.description{
     margin-top:5px;
     margin-bottom:5px;
 }
+
+.alert{
+    margin-top:15px;
+}
+
+.address-div .glyphicon-remove-sign{
+    cursor: pointer !important;
+    position: absolute;
+    top: 10px;
+    left: 93%;
+}
