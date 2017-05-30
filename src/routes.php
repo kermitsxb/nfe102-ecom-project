@@ -127,57 +127,73 @@ $app->post('/register', function($request, $response, $args){
     if ($request->isPost()) {
         $username = strtolower($request->getParam('email'));
 
-        $userQuery = new UserQuery();
-        $user = $userQuery->findOneByEmail($username);
+        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
 
-        if ($user === null)
-        {
-            $password = $request->getParam('password');
-            $passwordConf = $request->getParam('passwordConf');
 
-            $this->logger->info("User : " . $username);
-            $this->logger->info("Password : " . $password);
-            $this->logger->info("PasswordConf : " . $passwordConf);
+            $userQuery = new UserQuery();
+            $user = $userQuery->findOneByEmail($username);
 
-            if ($password === $passwordConf) {
-                $roles = "member";
-                $creation = date("Y-m-d H:i:s");
-                $modification = date("Y-m-d H:i:s");
+            if ($user === null)
+            {
+                $password = $request->getParam('password');
+                $passwordConf = $request->getParam('passwordConf');
 
-                $queryId = new UserQuery();
-                $lastUser = $queryId->orderById('desc')->findOne();
-                if ($lastUser) {
-                    $userId = $lastUser->getId() + 1;
+                $this->logger->info("User : " . $username);
+                $this->logger->info("Password : " . $password);
+                $this->logger->info("PasswordConf : " . $passwordConf);
+
+                if ($password === $passwordConf) {
+                    $roles = "member";
+                    $creation = date("Y-m-d H:i:s");
+                    $modification = date("Y-m-d H:i:s");
+
+                    $queryId = new UserQuery();
+                    $lastUser = $queryId->orderById('desc')->findOne();
+                    if ($lastUser) {
+                        $userId = $lastUser->getId() + 1;
+                    } else {
+                        $userId = 0;
+                    }
+
+                    $user = new User();
+                    $user->setId($userId);
+                    $user->setEmail($username);
+                    $user->setFirstname($request->getParam('prenom'));
+                    $user->setLastname($request->getParam('nom'));
+                    $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
+                    $user->setCreationDate($creation);
+                    $user->setModificationDate($modification);
+                    $user->setRole($roles);
+                    $user->save();
+
+                    $result = $this->authenticator->authenticate($username, $password);
+                    if ($result->isValid()) {
+                        Session::getInstance()->set('user', $user);
+                    }
+
+                    $this->logger->info("Url  : " . $this->router->pathFor('userIndex', array('id' => $user->getId())));
+
+                    return $response->withRedirect($this->router->pathFor('userIndex', array('id' => $user->getId())));
                 } else {
-                    $userId = 0;
+                    $message = Session::getInstance()->get('message');
+                    if (!$message)
+                    {
+                        $message = array();
+                    }
+                    $message[] = "Les mots de passes sont différents";
+
+                    $this->logger->info($message);
+
+                    Session::getInstance()->set('message', $message);
+                    return $response->withRedirect($this->router->pathFor('login'));
                 }
-
-                $user = new User();
-                $user->setId($userId);
-                $user->setEmail($username);
-                $user->setFirstname($request->getParam('prenom'));
-                $user->setLastname($request->getParam('nom'));
-                $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
-                $user->setCreationDate($creation);
-                $user->setModificationDate($modification);
-                $user->setRole($roles);
-                $user->save();
-
-                $result = $this->authenticator->authenticate($username, $password);
-                if ($result->isValid()) {
-                    Session::getInstance()->set('user', $user);
-                }
-
-                $this->logger->info("Url  : " . $this->router->pathFor('userIndex', array('id' => $user->getId())));
-
-                return $response->withRedirect($this->router->pathFor('userIndex', array('id' => $user->getId())));
             } else {
                 $message = Session::getInstance()->get('message');
                 if (!$message)
                 {
                     $message = array();
                 }
-                $message[] = "Les mots de passes sont différents";
+                $message[] = "Utilisateur existant !";
 
                 $this->logger->info($message);
 
@@ -190,7 +206,7 @@ $app->post('/register', function($request, $response, $args){
             {
                 $message = array();
             }
-            $message[] = "Utilisateur existant !";
+            $message[] = "Adresse email non valide !";
 
             $this->logger->info($message);
 
@@ -603,6 +619,8 @@ $app->post('/search', function($request, $response, $args) use ($app){
 $app->get('/order-success', function($request, $response, $args) {
     /** @var Slim\Http\Request  $request */
     /** @var Slim\Http\Response $response */
+    /** @var Cart $cart*/
+    /** @var User $user*/
     /** @var array $args */
     $this->logger->info("GET '/order-success' route");
     $args['context'] = 'order-success';
