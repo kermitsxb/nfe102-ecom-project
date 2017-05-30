@@ -105,7 +105,7 @@
             </div>
             {% for address in adresses %}
                 <div class="col-lg-4 address-div">
-                    {{ address.getFirstname }} {{ address.getLastname }}<i class="glyphicon glyphicon-remove-sign" onclick="removeAddr(this, {{ address.getId }})"></i><br>
+                    {{ address.getFirstname }} {{ address.getLastname }}<i class="glyphicon glyphicon-remove-sign" title="Supprimer" onclick="removeAddr(this, {{ address.getId }})"></i><br>
                     {{ address.getAddressLine1 }} <br>
                     {{ address.getZipcode }} {{ address.getCity }} <br>
                     {{ address.getCountry }}

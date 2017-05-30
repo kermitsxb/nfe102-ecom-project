@@ -5,6 +5,9 @@
 
 <div class="container" style="margin-top:50px;">
 
+    <div class="messages">
+    </div>
+
     {% set nb_prod = 0 %}
 
     {% if products|length > 0%}
@@ -107,6 +110,14 @@
                     if (data.code == 200)
                     {
                         location.reload();
+                    } else {
+                        jQuery('.messages').append('<div class="alert alert-danger fade in col-lg-12">');
+                        jQuery('.messages').children().first().append('<a href="#" class="close" data-dismiss="alert">&times;</a>');
+                        jQuery('.messages').children().first().append(data.message);
+//                        jQuery('.alert-danger').append(data.message);
+                        var page = jQuery('.alert-danger'); // Page cible
+                        var speed = 750; // Durée de l'animation (en ms)
+                        jQuery('html, body').animate( { scrollTop: 0 }, speed );
                     }
                 });
             });

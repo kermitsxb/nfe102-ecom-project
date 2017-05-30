@@ -505,6 +505,10 @@ $app->post('/cart', function($request, $response, $args) use ($app) {
     $this->logger->info("POST '/cart' route");
     $ret = array('code' => '500');
     $user = Session::getInstance()->get('user');
+    if (!$user){
+        $ret['message'] = "Veuillez vous connecter pour pouvoir ajouter panier SVP.";
+        return json_encode($ret);
+    }
     /** @var Cart  $cart */
     $cart = $user->getCart();
     $action = $request->getParam('action');
